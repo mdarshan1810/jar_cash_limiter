@@ -21,3 +21,6 @@ Thumbs.db
 
 # Superpowers brainstorm session data
 .superpowers/
+
+# Machine-local toolchain env (see setup.md)
+.envrc
