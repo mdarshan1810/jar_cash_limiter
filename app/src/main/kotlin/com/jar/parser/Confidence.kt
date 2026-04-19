@@ -6,7 +6,7 @@ package com.jar.parser
  *  - 0.7 = amount + at least one of merchant/balance
  *  - 0.4 = amount only
  */
-fun scoreConfidence(amount: Long, merchant: String?, balance: Long?): Float {
+fun scoreConfidence(merchant: String?, balance: Long?): Float {
     val hasMerchant = !merchant.isNullOrBlank()
     val hasBalance = balance != null
     return when {

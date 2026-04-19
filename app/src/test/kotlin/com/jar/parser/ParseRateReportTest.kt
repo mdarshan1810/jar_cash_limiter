@@ -17,7 +17,7 @@ class ParseRateReportTest {
     private val minRate: Float = 0.0f
 
     @Test fun corpusParseRateMeetsThreshold() {
-        val url = javaClass.classLoader.getResource("hdfc_samples") ?: error("samples dir missing")
+        val url = javaClass.classLoader?.getResource("hdfc_samples") ?: error("samples dir missing")
         val dir = File(url.toURI())
         val samples = dir.listFiles { f -> f.extension == "txt" }?.toList() ?: emptyList()
         assertTrue("no samples on classpath", samples.isNotEmpty())

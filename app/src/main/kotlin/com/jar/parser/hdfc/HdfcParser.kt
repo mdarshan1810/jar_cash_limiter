@@ -18,7 +18,7 @@ class HdfcParser : BankParser {
         val accountLast4: String?
     )
 
-    /** Filled in by Tasks 8–12. */
+    /** Patterns are tried in declaration order; the first matching pattern wins. `amount_only` must remain last. */
     internal val patterns: List<Pattern> = listOf(
         Pattern(
             name = "upi_sent",
@@ -57,7 +57,7 @@ class HdfcParser : BankParser {
         )
     )
 
-    /** Filled in by Tasks 8–12 — one `extractFor...` per named pattern. */
+    /** Returns null if the pattern name is unrecognised, causing parse() to skip to the next pattern. */
     internal fun extract(pattern: Pattern, match: MatchResult): Extracted? {
         return when (pattern.name) {
             "upi_sent" -> {
@@ -100,7 +100,7 @@ class HdfcParser : BankParser {
                 merchant = ex.merchant,
                 balance = ex.balance,
                 accountLast4 = ex.accountLast4,
-                confidence = scoreConfidence(ex.amount, ex.merchant, ex.balance),
+                confidence = scoreConfidence(ex.merchant, ex.balance),
                 matchedPattern = p.name
             )
         }

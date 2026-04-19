@@ -14,7 +14,7 @@ class HdfcFixtureSuiteTest {
     private val json = Json { ignoreUnknownKeys = true }
 
     private fun samplesDir(): File {
-        val url = javaClass.classLoader.getResource("hdfc_samples")
+        val url = javaClass.classLoader?.getResource("hdfc_samples")
             ?: error("hdfc_samples/ not on classpath — check src/test/resources")
         return File(url.toURI())
     }
