@@ -1,0 +1,8 @@
+{
+  "matchedPattern": "upi_sent",
+  "amount": 42000,
+  "merchant": "Zomato Limited",
+  "balance": null,
+  "accountLast4": "1234",
+  "minConfidence": 0.7
+}
