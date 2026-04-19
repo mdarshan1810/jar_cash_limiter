@@ -1,0 +1,8 @@
+{
+  "matchedPattern": "debit_std",
+  "amount": 75000,
+  "merchant": null,
+  "balance": 1234567,
+  "accountLast4": "5678",
+  "minConfidence": 0.7
+}
