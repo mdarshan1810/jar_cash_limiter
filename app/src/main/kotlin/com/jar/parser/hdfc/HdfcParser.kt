@@ -40,6 +40,13 @@ class HdfcParser : BankParser {
                 """INR\s+([\d,]+(?:\.\d{1,2})?)\s+debited\s+from\s+A/c\s+X*(\d{4,6}).*?Avl\s+Bal:\s+INR\s+([\d,]+(?:\.\d{1,2})?)""",
                 setOf(RegexOption.IGNORE_CASE, RegexOption.DOT_MATCHES_ALL)
             )
+        ),
+        Pattern(
+            name = "upi_slash",
+            regex = Regex(
+                """Rs\.?\s*([\d,]+(?:\.\d{1,2})?).*?UPI/\d+/([^/]+)/""",
+                setOf(RegexOption.IGNORE_CASE, RegexOption.DOT_MATCHES_ALL)
+            )
         )
     )
 
@@ -63,6 +70,11 @@ class HdfcParser : BankParser {
                 val last4 = match.groupValues[2].takeLast(4)
                 val balance = com.jar.parser.parseAmountToPaise(match.groupValues[3])
                 Extracted(amount = amount, merchant = null, balance = balance, accountLast4 = last4)
+            }
+            "upi_slash" -> {
+                val amount = com.jar.parser.parseAmountToPaise(match.groupValues[1]) ?: return null
+                val merchant = match.groupValues[2].trim().ifBlank { null }
+                Extracted(amount = amount, merchant = merchant, balance = null, accountLast4 = null)
             }
             else -> null
         }

@@ -1,0 +1,8 @@
+{
+  "matchedPattern": "upi_slash",
+  "amount": 29900,
+  "merchant": "SWIGGY",
+  "balance": null,
+  "accountLast4": null,
+  "minConfidence": 0.7
+}
