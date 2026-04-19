@@ -1,0 +1,8 @@
+{
+  "matchedPattern": "card_spent",
+  "amount": 125000,
+  "merchant": "Amazon Pay",
+  "balance": null,
+  "accountLast4": "9876",
+  "minConfidence": 0.7
+}

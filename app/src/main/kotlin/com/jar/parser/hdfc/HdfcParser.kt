@@ -26,6 +26,13 @@ class HdfcParser : BankParser {
                 """Sent\s+Rs\.?\s*([\d,]+(?:\.\d{1,2})?)\s+from\s+HDFC\s+Bank\s+A/?C\s+x?(\d{4,6})\s+to\s+(.+?)(?:\s+on\s+|\s*\.)""",
                 RegexOption.IGNORE_CASE
             )
+        ),
+        Pattern(
+            name = "card_spent",
+            regex = Regex(
+                """Rs\.?\s*([\d,]+(?:\.\d{1,2})?)\s+spent\s+on\s+HDFC\s+Bank\s+Card\s+x?(\d{4,6})\s+at\s+(.+?)(?:\s+on\s+|\s*\.)""",
+                RegexOption.IGNORE_CASE
+            )
         )
     )
 
@@ -33,6 +40,12 @@ class HdfcParser : BankParser {
     internal fun extract(pattern: Pattern, match: MatchResult): Extracted? {
         return when (pattern.name) {
             "upi_sent" -> {
+                val amount = com.jar.parser.parseAmountToPaise(match.groupValues[1]) ?: return null
+                val last4 = match.groupValues[2].takeLast(4)
+                val merchant = match.groupValues[3].trim().trimEnd('.')
+                Extracted(amount = amount, merchant = merchant, balance = null, accountLast4 = last4)
+            }
+            "card_spent" -> {
                 val amount = com.jar.parser.parseAmountToPaise(match.groupValues[1]) ?: return null
                 val last4 = match.groupValues[2].takeLast(4)
                 val merchant = match.groupValues[3].trim().trimEnd('.')
