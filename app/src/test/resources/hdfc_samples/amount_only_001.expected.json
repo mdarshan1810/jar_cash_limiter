@@ -1,0 +1,9 @@
+{
+  "matchedPattern": "amount_only",
+  "amount": 500000,
+  "merchant": null,
+  "balance": null,
+  "accountLast4": null,
+  "minConfidence": 0.4,
+  "maxConfidence": 0.4
+}
