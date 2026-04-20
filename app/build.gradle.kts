@@ -27,6 +27,14 @@ android {
         jvmTarget = "17"
     }
 
+    buildFeatures {
+        compose = true
+    }
+
+    composeOptions {
+        kotlinCompilerExtensionVersion = libs.versions.compose.compiler.get()
+    }
+
     buildTypes {
         debug { /* defaults */ }
         release {
@@ -51,6 +59,17 @@ dependencies {
     implementation(libs.room.ktx)
     implementation(libs.datastore.preferences)
     ksp(libs.room.compiler)
+
+    implementation(platform(libs.compose.bom))
+    implementation(libs.compose.ui)
+    implementation(libs.compose.ui.graphics)
+    implementation(libs.compose.ui.tooling.preview)
+    implementation(libs.compose.material3)
+    implementation(libs.activity.compose)
+    implementation(libs.lifecycle.viewmodel.compose)
+    implementation(libs.lifecycle.runtime.compose)
+    implementation(libs.navigation.compose)
+    debugImplementation(libs.compose.ui.tooling)
 
     testImplementation(libs.junit)
     testImplementation(libs.kotlinx.serialization.json)
