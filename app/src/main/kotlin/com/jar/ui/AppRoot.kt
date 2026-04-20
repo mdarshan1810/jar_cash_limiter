@@ -3,7 +3,10 @@ package com.jar.ui
 import android.content.Context
 import android.content.Intent
 import android.provider.Settings as AndroidSettings
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.pager.VerticalPager
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
@@ -21,6 +24,8 @@ import com.jar.AppContainer
 import com.jar.settings.Settings
 import com.jar.ui.jar.JarScreen
 import com.jar.ui.jar.JarViewModel
+import com.jar.ui.limit.LimitScreen
+import com.jar.ui.limit.LimitViewModel
 import com.jar.ui.onboarding.OnboardingFlow
 import com.jar.ui.onboarding.OnboardingViewModel
 import com.jar.ui.theme.JarTheme
@@ -72,10 +77,25 @@ private fun OnboardingRoute(container: AppContainer) {
     )
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun MainRoute(container: AppContainer) {
-    val viewModel: JarViewModel = viewModel(factory = JarViewModel.factory(container))
-    JarScreen(viewModel = viewModel)
+    val pagerState = rememberPagerState(pageCount = { 2 })
+    VerticalPager(
+        state = pagerState,
+        modifier = Modifier.fillMaxSize()
+    ) { page ->
+        when (page) {
+            0 -> {
+                val jarVm: JarViewModel = viewModel(factory = JarViewModel.factory(container))
+                JarScreen(viewModel = jarVm)
+            }
+            1 -> {
+                val limitVm: LimitViewModel = viewModel(factory = LimitViewModel.factory(container))
+                LimitScreen(viewModel = limitVm)
+            }
+        }
+    }
 }
 
 private fun isNotificationAccessGranted(context: Context): Boolean =
