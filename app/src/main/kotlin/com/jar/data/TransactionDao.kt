@@ -4,6 +4,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import androidx.room.Transaction
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -31,6 +32,30 @@ interface TransactionDao {
         minTimestamp: Long,
         maxTimestamp: Long
     ): List<TransactionEntity>
+
+    /**
+     * Atomic check+insert. SQLite serializes write transactions, so two callers racing with
+     * identical (amount, accountLast4, ±window) but different source_sms_hash cannot both
+     * slip past the window-scan — the second one sees the first's row and skips.
+     *
+     * Returns the inserted row id, or null when the tx was dropped as a duplicate (either
+     * the window scan matched, or the unique source_sms_hash index rejected the insert).
+     */
+    @Transaction
+    suspend fun insertIfUniqueInWindow(
+        tx: TransactionEntity,
+        minTimestamp: Long,
+        maxTimestamp: Long
+    ): Long? {
+        val candidates = findDupeCandidates(
+            amount = tx.amount,
+            accountLast4 = tx.accountLast4,
+            minTimestamp = minTimestamp,
+            maxTimestamp = maxTimestamp
+        )
+        if (candidates.isNotEmpty()) return null
+        return runCatching { insert(tx) }.getOrNull()
+    }
 
     @Query(
         """

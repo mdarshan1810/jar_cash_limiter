@@ -39,22 +39,19 @@ class JarRepository(
      * matches a row within ±2 minutes — covers the common case of SMS + bank app posting the
      * same transaction twice. The unique index on source_sms_hash is the last-line defense
      * if this check misses (e.g., service restart replay).
+     *
+     * The DAO runs the check+insert inside a single Room transaction so two callers racing
+     * with identical (amount, accountLast4, ±window) but different text/hash cannot both
+     * win the window scan — SQLite serializes write transactions.
      */
     suspend fun insertTransaction(tx: TransactionEntity): InsertTxResult {
         val windowMs = 2.minutes.inWholeMilliseconds
-        val candidates = txDao.findDupeCandidates(
-            amount = tx.amount,
-            accountLast4 = tx.accountLast4,
+        val id = txDao.insertIfUniqueInWindow(
+            tx = tx,
             minTimestamp = tx.timestamp - windowMs,
             maxTimestamp = tx.timestamp + windowMs
         )
-        if (candidates.isNotEmpty()) return InsertTxResult.Duplicate
-
-        return runCatching { txDao.insert(tx) }
-            .fold(
-                onSuccess = { InsertTxResult.Inserted(it) },
-                onFailure = { InsertTxResult.Duplicate }
-            )
+        return if (id != null) InsertTxResult.Inserted(id) else InsertTxResult.Duplicate
     }
 
     suspend fun insertUnparsed(notification: UnparsedNotificationEntity): Long =

@@ -1,7 +1,13 @@
 package com.jar.data
 
 import com.jar.settings.SettingsStore
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runTest
 import org.junit.After
 import org.junit.Assert.assertEquals
@@ -103,6 +109,38 @@ class DedupeTest {
         repo.insertTransaction(tx(amount = 42000L, hash = "h1"))
         val other = repo.insertTransaction(tx(amount = 42100L, hash = "h2"))
         assertTrue(other is InsertTxResult.Inserted)
+    }
+
+    @Test fun concurrentInsertsWithDifferentHashesYieldSingleRow() = runBlocking {
+        // Two notifications for the same payment (SMS vs bank app) can arrive in the same
+        // millisecond with different text → different source_sms_hash. The in-code window
+        // dedupe has to hold under concurrent callers — before the DAO @Transaction fix,
+        // both callers' findDupeCandidates reads could observe an empty table before either
+        // insert landed, and both would persist. Stress this across many iterations to catch
+        // the race consistently rather than by luck.
+        repeat(20) { iter ->
+            db.clearAllTables()
+            val ts = baseTime + iter * 1_000_000L
+            val tx1 = tx(timestamp = ts, hash = "iter-$iter-a", last4 = "1234")
+            val tx2 = tx(timestamp = ts + 5_000L, hash = "iter-$iter-b", last4 = "1234")
+
+            val results = coroutineScope {
+                listOf(
+                    async(Dispatchers.Default) { repo.insertTransaction(tx1) },
+                    async(Dispatchers.Default) { repo.insertTransaction(tx2) }
+                ).awaitAll()
+            }
+
+            val inserted = results.count { it is InsertTxResult.Inserted }
+            val dupes = results.count { it === InsertTxResult.Duplicate }
+            assertEquals("iter=$iter expected exactly one Inserted", 1, inserted)
+            assertEquals("iter=$iter expected exactly one Duplicate", 1, dupes)
+            assertEquals(
+                "iter=$iter DB should contain one row",
+                1,
+                repo.observeRecent(10).first().size
+            )
+        }
     }
 
     @Test fun uniqueHashIndexRejectsReplayOutsideWindow() = runTest {

@@ -49,6 +49,15 @@ class HdfcWhitelistTest {
         assertFalse(wl.matches(raw(sender = "SBIBK")))
     }
 
+    @Test fun lookAlikeSendersDoNotMatch() {
+        // Pure suffix collisions — without the "-" separator these aren't HDFC.
+        // A bare endsWith("HDFCBK") would let these through; a proper telecom prefix
+        // always has a "-" between the operator code and the bank token.
+        assertFalse(wl.matches(raw(sender = "XHDFCBK")))
+        assertFalse(wl.matches(raw(sender = "COOLHDFCBK")))
+        assertFalse(wl.matches(raw(sender = "NOTHDFC")))
+    }
+
     @Test fun whatsappPackageWithBankyLookingTextDoesNotMatch() {
         assertFalse(wl.matches(raw(pkg = "com.whatsapp")))
     }
