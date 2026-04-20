@@ -4,7 +4,18 @@
     <application
         android:name=".JarApp"
         android:allowBackup="false"
-        android:label="Jar">
+        android:label="Jar"
+        android:theme="@style/Theme.Jar">
+
+        <activity
+            android:name=".MainActivity"
+            android:exported="true"
+            android:theme="@style/Theme.Jar">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
 
         <service
             android:name=".notifications.JarNotificationListener"
