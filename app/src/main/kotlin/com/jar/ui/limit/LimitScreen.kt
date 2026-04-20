@@ -10,9 +10,14 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
@@ -39,13 +44,25 @@ import com.jar.ui.theme.WarningRed
 import kotlin.math.abs
 
 @Composable
-fun LimitScreen(viewModel: LimitViewModel) {
+fun LimitScreen(viewModel: LimitViewModel, onSettingsClick: () -> Unit) {
     val state by viewModel.state.collectAsStateWithLifecycle()
-    LimitScreenContent(
-        state = state,
-        onSaveLimit = viewModel::saveLimit,
-        onResetMonth = viewModel::resetMonth
-    )
+    Box(Modifier.fillMaxSize()) {
+        LimitScreenContent(
+            state = state,
+            onSaveLimit = viewModel::saveLimit,
+            onResetMonth = viewModel::resetMonth
+        )
+        IconButton(
+            onClick = onSettingsClick,
+            modifier = Modifier.align(Alignment.TopEnd).padding(8.dp)
+        ) {
+            Icon(
+                Icons.Filled.Settings,
+                contentDescription = "Settings",
+                tint = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
+            )
+        }
+    }
 }
 
 @Composable

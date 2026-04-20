@@ -9,6 +9,10 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -32,13 +36,30 @@ import com.jar.ui.theme.JarTheme
 import com.jar.ui.theme.jarAccent
 
 @Composable
-fun JarScreen(viewModel: JarViewModel) {
+fun JarScreen(viewModel: JarViewModel, onSettingsClick: () -> Unit) {
     val state by viewModel.state.collectAsStateWithLifecycle()
-    JarScreenContent(state)
+    JarScreenContent(state, onSettingsClick)
 }
 
 @Composable
-private fun JarScreenContent(state: JarState) {
+private fun JarScreenContent(state: JarState, onSettingsClick: () -> Unit = {}) {
+    Box(modifier = Modifier.fillMaxSize()) {
+        JarColumnContent(state)
+        IconButton(
+            onClick = onSettingsClick,
+            modifier = Modifier.align(Alignment.TopEnd).padding(8.dp)
+        ) {
+            Icon(
+                Icons.Filled.Settings,
+                contentDescription = "Settings",
+                tint = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
+            )
+        }
+    }
+}
+
+@Composable
+private fun JarColumnContent(state: JarState) {
     Column(
         modifier = Modifier
             .fillMaxSize()
