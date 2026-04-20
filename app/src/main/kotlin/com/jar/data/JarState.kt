@@ -11,6 +11,15 @@ data class JarState(
     val isOverLimit: Boolean
 ) {
     companion object {
+        val EMPTY = JarState(
+            startingAmount = 0L,
+            spent = 0L,
+            monthlyLimit = 0L,
+            fractionRemaining = 0f,
+            isOverdrawn = false,
+            isOverLimit = false
+        )
+
         fun from(settings: Settings, spent: Long): JarState {
             val remaining = settings.startingAmount - spent
             val fraction = if (settings.startingAmount > 0L) {
