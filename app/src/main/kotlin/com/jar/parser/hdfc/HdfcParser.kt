@@ -23,21 +23,21 @@ class HdfcParser : BankParser {
         Pattern(
             name = "upi_sent",
             regex = Regex(
-                """Sent\s+Rs\.?\s*([\d,]+(?:\.\d{1,2})?)\s+from\s+HDFC\s+Bank\s+A/?C\s+x?(\d{4,6})\s+to\s+(.+?)(?:\s+on\s+|\s*\.)""",
+                """Sent\s+Rs\.?\s*([\d,]+(?:\.\d{1,2})?)\s+from\s+HDFC\s+Bank\s+A/?C\s+[x*]?(\d{4,6})\s+to\s+(.+?)(?:\s+on\s+|\s*\.)""",
                 RegexOption.IGNORE_CASE
             )
         ),
         Pattern(
             name = "card_spent",
             regex = Regex(
-                """Rs\.?\s*([\d,]+(?:\.\d{1,2})?)\s+spent\s+on\s+HDFC\s+Bank\s+Card\s+x?(\d{4,6})\s+at\s+(.+?)(?:\s+on\s+|\s*\.)""",
+                """Rs\.?\s*([\d,]+(?:\.\d{1,2})?)\s+spent\s+on\s+HDFC\s+Bank\s+Card\s+[x*]?(\d{4,6})\s+at\s+(.+?)(?:\s+on\s+|\s*\.)""",
                 RegexOption.IGNORE_CASE
             )
         ),
         Pattern(
             name = "debit_std",
             regex = Regex(
-                """INR\s+([\d,]+(?:\.\d{1,2})?)\s+debited\s+from\s+A/c\s+X*(\d{4,6}).*?Avl\s+Bal:\s+INR\s+([\d,]+(?:\.\d{1,2})?)""",
+                """INR\s+([\d,]+(?:\.\d{1,2})?)\s+debited\s+from\s+A/c\s+[X*]*(\d{4,6}).*?Avl\s+Bal:\s+INR\s+([\d,]+(?:\.\d{1,2})?)""",
                 setOf(RegexOption.IGNORE_CASE, RegexOption.DOT_MATCHES_ALL)
             )
         ),

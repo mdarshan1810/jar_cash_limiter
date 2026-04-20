@@ -1,0 +1,9 @@
+{
+  "matchedPattern": "upi_sent",
+  "amount": 500,
+  "merchant": "MADHU H S",
+  "balance": null,
+  "accountLast4": "2000",
+  "minConfidence": 0.7,
+  "maxConfidence": 0.7
+}
