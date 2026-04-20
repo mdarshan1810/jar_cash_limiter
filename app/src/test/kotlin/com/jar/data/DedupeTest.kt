@@ -1,12 +1,7 @@
 package com.jar.data
 
 import com.jar.settings.SettingsStore
-import androidx.datastore.core.DataStore
-import androidx.datastore.preferences.core.Preferences
-import androidx.datastore.preferences.core.emptyPreferences
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
 import org.junit.After
 import org.junit.Assert.assertEquals
@@ -16,16 +11,6 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
-
-/**
- * A no-op DataStore so JarRepository can be constructed in tests without hitting the
- * Windows-flaky Preferences file I/O.
- */
-private class FakeDataStore : DataStore<Preferences> {
-    override val data: Flow<Preferences> = flowOf(emptyPreferences())
-    override suspend fun updateData(transform: suspend (t: Preferences) -> Preferences): Preferences =
-        transform(emptyPreferences())
-}
 
 @OptIn(ExperimentalCoroutinesApi::class)
 @RunWith(RobolectricTestRunner::class)
@@ -43,7 +28,7 @@ class DedupeTest {
         repo = JarRepository(
             txDao = db.transactionDao(),
             unparsedDao = db.unparsedNotificationDao(),
-            settingsStore = SettingsStore(FakeDataStore())
+            settingsStore = SettingsStore(InMemoryDataStore())
         )
     }
 
