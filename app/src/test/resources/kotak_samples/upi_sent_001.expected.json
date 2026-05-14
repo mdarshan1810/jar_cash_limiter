@@ -1,0 +1,8 @@
+{
+  "matchedPattern": "kotak_upi_sent",
+  "amount": 7500,
+  "merchant": "paytm.s1zwuhv@pty",
+  "balance": null,
+  "accountLast4": "9885",
+  "minConfidence": 0.7
+}

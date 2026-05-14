@@ -8,9 +8,11 @@ import com.jar.data.AppDatabase
 import com.jar.data.JarRepository
 import com.jar.notifications.BankWhitelist
 import com.jar.notifications.HdfcWhitelist
+import com.jar.notifications.KotakWhitelist
 import com.jar.notifications.NotificationPipeline
 import com.jar.parser.BankParser
 import com.jar.parser.hdfc.HdfcParser
+import com.jar.parser.kotak.KotakParser
 import com.jar.settings.SettingsStore
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -45,8 +47,14 @@ class AppContainer(context: Context) {
         settingsStore = settingsStore
     )
 
-    private val parsers: Map<String, BankParser> = mapOf("HDFC" to HdfcParser())
-    private val whitelists: Map<String, BankWhitelist> = mapOf("HDFC" to HdfcWhitelist())
+    private val parsers: Map<String, BankParser> = mapOf(
+        "HDFC" to HdfcParser(),
+        "KOTAK" to KotakParser()
+    )
+    private val whitelists: Map<String, BankWhitelist> = mapOf(
+        "HDFC" to HdfcWhitelist(),
+        "KOTAK" to KotakWhitelist()
+    )
 
     val pipeline: NotificationPipeline = NotificationPipeline(
         parsers = parsers,

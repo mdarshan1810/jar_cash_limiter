@@ -24,3 +24,12 @@ Thumbs.db
 
 # Machine-local toolchain env (see setup.md)
 .envrc
+
+# Claude Code local config
+.claude/
+
+# Local debugging snapshots pulled from device
+jar_snapshot.db
+settings_snapshot.pb
+*.db-wal
+*.db-shm

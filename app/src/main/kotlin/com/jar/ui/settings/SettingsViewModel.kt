@@ -44,6 +44,11 @@ class SettingsViewModel(
         viewModelScope.launch { settingsStore.setRolloverMode(mode) }
     }
 
+    fun setTrackedBank(bank: String) {
+        if (bank.isBlank()) return
+        viewModelScope.launch { settingsStore.setTrackedBank(bank) }
+    }
+
     /**
      * Clears the tracked account, which drops the user back into onboarding's Waiting step
      * (AppRoot's trackedAccountLast4 null check). Useful when the user switches accounts or

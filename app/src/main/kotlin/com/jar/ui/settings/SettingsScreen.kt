@@ -42,6 +42,8 @@ import com.jar.settings.RolloverMode
 import com.jar.settings.Settings
 import com.jar.ui.jar.formatRupees
 
+private val SUPPORTED_BANKS = listOf("HDFC", "KOTAK")
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SettingsScreen(viewModel: SettingsViewModel, onBack: () -> Unit) {
@@ -64,6 +66,7 @@ fun SettingsScreen(viewModel: SettingsViewModel, onBack: () -> Unit) {
             onSetMonthlyLimit = viewModel::setMonthlyLimitRupees,
             onSetPeriodStartDay = viewModel::setPeriodStartDay,
             onSetRolloverMode = viewModel::setRolloverMode,
+            onSetTrackedBank = viewModel::setTrackedBank,
             onRelinkAccount = viewModel::relinkAccount,
             onResetMonth = viewModel::resetMonth,
             modifier = Modifier.padding(padding)
@@ -78,6 +81,7 @@ private fun SettingsContent(
     onSetMonthlyLimit: (Long) -> Unit,
     onSetPeriodStartDay: (Int) -> Unit,
     onSetRolloverMode: (RolloverMode) -> Unit,
+    onSetTrackedBank: (String) -> Unit,
     onRelinkAccount: () -> Unit,
     onResetMonth: () -> Unit,
     modifier: Modifier = Modifier
@@ -149,7 +153,28 @@ private fun SettingsContent(
         }
 
         SectionLabel("ACCOUNT")
-        InfoRow(label = "Bank", value = settings.trackedBank)
+        SUPPORTED_BANKS.forEach { bank ->
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .selectable(
+                        selected = settings.trackedBank == bank,
+                        onClick = { onSetTrackedBank(bank) }
+                    )
+                    .padding(vertical = 4.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                RadioButton(
+                    selected = settings.trackedBank == bank,
+                    onClick = { onSetTrackedBank(bank) }
+                )
+                Text(
+                    text = bank,
+                    style = MaterialTheme.typography.bodyLarge,
+                    modifier = Modifier.padding(start = 12.dp)
+                )
+            }
+        }
         InfoRow(
             label = "Account",
             value = settings.trackedAccountLast4?.let { "••$it" } ?: "(not linked)"

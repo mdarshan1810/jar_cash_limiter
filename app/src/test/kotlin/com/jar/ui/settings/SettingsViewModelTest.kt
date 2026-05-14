@@ -86,6 +86,20 @@ class SettingsViewModelTest {
         assertEquals(RolloverMode.RESET, settings.flow.first().rolloverMode)
     }
 
+    @Test fun setTrackedBankPersists() = runTest {
+        vm.setTrackedBank("KOTAK")
+        assertEquals("KOTAK", settings.flow.first().trackedBank)
+        vm.setTrackedBank("HDFC")
+        assertEquals("HDFC", settings.flow.first().trackedBank)
+    }
+
+    @Test fun setTrackedBankRejectsBlank() = runTest {
+        settings.setTrackedBank("HDFC")
+        vm.setTrackedBank("")
+        vm.setTrackedBank("   ")
+        assertEquals("HDFC", settings.flow.first().trackedBank)
+    }
+
     @Test fun relinkAccountClearsTrackedLast4() = runTest {
         settings.setTrackedAccountLast4("1234")
         vm.relinkAccount()
